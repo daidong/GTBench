@@ -7,30 +7,33 @@ import edu.dair.sgdb.utils.Constants;
 import edu.dair.sgdb.utils.JenkinsHash;
 import org.apache.thrift.TException;
 import org.apache.thrift.async.AsyncMethodCallback;
+import org.apache.thrift.transport.TTransportException;
 
 import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GIGAClt extends AbstractClt {
-    public HashMap<ByteBuffer, GigaIndex> gigaMaps;
+    public ConcurrentHashMap<ByteBuffer, GigaIndex> gigaMaps;
 
     public GIGAClt(int port, ArrayList<String> alls) {
         super(port, alls);
-        this.gigaMaps = new HashMap<>();
+        this.gigaMaps = new ConcurrentHashMap<>();
     }
 
-    private GigaIndex surelyGetGigaMap(byte[] bsrc) {
-        ByteBuffer src = ByteBuffer.wrap(bsrc);
-        if (!gigaMaps.containsKey(src)) {
-            int startIdx = getHashLocation(bsrc, Constants.MAX_VIRTUAL_NODE);
-            gigaMaps.put(src, new GigaIndex(startIdx, this.serverNum));
-        }
-        return gigaMaps.get(src);
+    private GigaIndex get_giga_index_4_vertex(byte[] bsrc) {
+        this.gigaMaps.putIfAbsent(
+                ByteBuffer.wrap(bsrc),
+                new GigaIndex(getHashLocation(bsrc, Constants.MAX_VIRTUAL_NODE), this.serverNum));
+        return gigaMaps.get(ByteBuffer.wrap(bsrc));
     }
 
     private int getServerLoc(byte[] src, byte[] dst) {
-        GigaIndex gi = surelyGetGigaMap(src);
+        GigaIndex gi = get_giga_index_4_vertex(src);
         JenkinsHash jh = new JenkinsHash();
         int dstHash = Math.abs(jh.hash32(dst));
         int index = gi.giga_get_index_for_hash(dstHash);
@@ -40,7 +43,7 @@ public class GIGAClt extends AbstractClt {
 
     @Override
     public List<KeyValue> read(byte[] srcVertex, EdgeType edgeType, byte[] dstKey) throws TException {
-        GigaIndex gi = surelyGetGigaMap(srcVertex);
+        GigaIndex gi = get_giga_index_4_vertex(srcVertex);
 
         while (true) {
             int target = getServerLoc(srcVertex, dstKey);
@@ -56,7 +59,7 @@ public class GIGAClt extends AbstractClt {
 
     @Override
     public int insert(byte[] srcVertex, EdgeType edgeType, byte[] dstKey, byte[] value) throws TException {
-        GigaIndex gi = surelyGetGigaMap(srcVertex);
+        GigaIndex gi = get_giga_index_4_vertex(srcVertex);
         int retry = 0;
         while (true) {
             int target = getServerLoc(srcVertex, dstKey);
@@ -106,61 +109,72 @@ public class GIGAClt extends AbstractClt {
     }
 
     private HashSet<Integer> getLocs(byte[] src, HashSet<Integer> excludes) {
-        GigaIndex gi = surelyGetGigaMap(src);
+        GigaIndex gi = get_giga_index_4_vertex(src);
         HashSet<Integer> locs = gi.giga_get_all_servers();
         locs.removeAll(excludes);
         return locs;
     }
 
-    private class ScanCallBack implements AsyncMethodCallback<TGraphFSServer.AsyncClient.giga_scan_call> {
-
-        List<KeyValue> rtn;
-        GigaIndex gi;
-        AtomicInteger ai;
-
-        public ScanCallBack(GigaIndex gi, AtomicInteger total, List<KeyValue> kvs){
-            this.rtn = kvs;
-            this.gi = gi;
-            this.ai = total;
-        }
-
-        @Override
-        public void onComplete(TGraphFSServer.AsyncClient.giga_scan_call scan_call) {
-            try{
-                GigaScan scan_rtn = scan_call.getResult();
-                this.rtn.addAll(scan_rtn.getKvs());
-                gi.giga_update_bitmap(scan_rtn.getBitmap());
-                this.ai.getAndDecrement();
-            } catch (TException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void onError(Exception e) {
-        }
-    }
-
     @Override
     public List<KeyValue> scan(byte[] srcVertex, EdgeType edgeType) throws TException {
-        GigaIndex gi = surelyGetGigaMap(srcVertex);
+        GigaIndex gi = get_giga_index_4_vertex(srcVertex);
         List<KeyValue> rtn = new ArrayList<>();
         HashSet<Integer> reqSrvs;
         HashSet<Integer> alreadySentSrvs = new HashSet<>();
         AtomicInteger totalReqs = new AtomicInteger(0);
-
+        
         while (true){
             reqSrvs = getLocs(srcVertex, alreadySentSrvs);
             alreadySentSrvs.addAll(reqSrvs);
-            if (reqSrvs.isEmpty() && totalReqs.get() == 0)
-                return new ArrayList<KeyValue>(rtn);
-
-            AsyncMethodCallback amcb = new ScanCallBack(gi, totalReqs, rtn);
-            for (int server : reqSrvs) {
-                totalReqs.getAndIncrement();
-                getAsyncClientConn(server).giga_scan(ByteBuffer.wrap(srcVertex), edgeType.get(), ByteBuffer.wrap(gi.bitmap), amcb);
+            if (totalReqs.get() == 0 && reqSrvs.isEmpty())
+                return rtn;
+            
+            for (int server : reqSrvs){
+                totalReqs.incrementAndGet();
+                this.workerPool.execute(
+                    new thread_scan(server, 
+                                    gi, totalReqs, rtn, 
+                                    srcVertex, edgeType));
             }
         }
+    }
+
+    private class thread_scan implements Runnable {
+
+        List<KeyValue> rtn;
+        GigaIndex gi;
+        AtomicInteger total;
+        int server_id;
+        byte[] src;
+        EdgeType edge_type;
+
+        public thread_scan(int server_id, GigaIndex gi, AtomicInteger total, List<KeyValue> kvs,
+                            byte[] srcVertex, EdgeType edgeType){
+            this.server_id = server_id;
+            this.gi = gi;
+            this.total = total;
+            this.rtn = kvs;
+            this.src = srcVertex;
+            this.edge_type = edgeType;
+        }
+        
+        @Override
+        public void run() {
+            try {
+                GigaScan scan_rtn = getClientConn(server_id).
+                    giga_scan(ByteBuffer.wrap(src), edge_type.get(), ByteBuffer.wrap(gi.bitmap));
+                
+                this.rtn.addAll(scan_rtn.getKvs());
+                this.gi.giga_update_bitmap(scan_rtn.getBitmap());
+                this.total.getAndDecrement();
+
+            } catch (TTransportException e) {
+                e.printStackTrace();
+            } catch (TException e) {
+                e.printStackTrace();
+			}
+        }
+
     }
 
     @Override

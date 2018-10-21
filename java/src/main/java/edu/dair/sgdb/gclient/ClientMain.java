@@ -65,7 +65,7 @@ public class ClientMain {
                 .build());
 
         options.addOption(Option.builder("graph").hasArg()
-                .desc("graph data directory")
+                .desc("graph file")
                 .build());
 
         options.addOption(Option.builder("srvlist").hasArgs()
@@ -83,18 +83,18 @@ public class ClientMain {
 
             if (args.length == 0) {
                 HelpFormatter formatter = new HelpFormatter();
-                formatter.printHelp("iogp-client", options);
+                formatter.printHelp("client", options);
                 System.exit(0);
             }
 
             if (line.hasOption("help")) {
                 HelpFormatter formatter = new HelpFormatter();
-                formatter.printHelp("iogp-client", options);
+                formatter.printHelp("client", options);
                 System.exit(0);
             }
 
             if (line.hasOption("type")) {
-                rst[0] = line.getOptionValue("type", "iogp");
+                rst[0] = line.getOptionValue("type", "edgecut");
             } else {
                 throw new ParseException("argument 'type' is required.");
             }
@@ -172,27 +172,36 @@ public class ClientMain {
         long start = 0;
         BufferedReader br;
 
-        String payload128 = "";
-        for (int i = 0; i < 128; i++) payload128 += "a";
-        byte[] val = payload128.getBytes();
+        String payload_string = "";
+        for (int i = 0; i < 128; i++) payload_string += "aaaaaaaaaa";
+        byte[] val = payload_string.getBytes();
 
         switch (op) {
 
-            case "insert":
+            case "insert-graph":
                 br = new BufferedReader(new FileReader(graphFile));
+                int line_num = 0;
                 start = System.currentTimeMillis();
                 while ((line = br.readLine()) != null) {
-                    String[] splits = line.split(" ");
+                    if (line.startsWith("#"))
+                        continue;
+
+                    String[] splits = line.split("\\W+");
                     byte[] src = splits[0].getBytes();
                     byte[] dst = splits[1].getBytes();
 
                     client.insert(src, EdgeType.OUT, dst, val);
                     client.insert(dst, EdgeType.IN, src, val);
+                    line_num += 2;
+
+                    if (line_num % 1000 == 0)
+                        GLogger.info("insert %d cost %d",
+                                line_num, (System.currentTimeMillis() - start));
                 }
                 GLogger.info("Insert time: %d", (System.currentTimeMillis() - start));
                 break;
 
-            case "insert100":
+            case "insert-100":
                 start = System.currentTimeMillis();
                 for (int i = 1; i <= 100; i++) {
                     byte[] src = "vertex0".getBytes();
@@ -201,10 +210,10 @@ public class ClientMain {
                     client.insert(src, EdgeType.OUT, dst, val);
                     client.insert(dst, EdgeType.IN, src, val);
                 }
-                GLogger.info("Insert100 time: %d", (System.currentTimeMillis() - start));
+                GLogger.info("Insert-100 time: %d", (System.currentTimeMillis() - start));
                 break;
 
-            case "insert1000":
+            case "insert-1000":
                 start = System.currentTimeMillis();
                 for (int i = 1; i <= 1000; i++) {
                     byte[] src = "vertex0".getBytes();
@@ -213,10 +222,10 @@ public class ClientMain {
                     client.insert(src, EdgeType.OUT, dst, val);
                     client.insert(dst, EdgeType.IN, src, val);
                 }
-                GLogger.info("Insert1000 time: %d", (System.currentTimeMillis() - start));
+                GLogger.info("Insert-1000 time: %d", (System.currentTimeMillis() - start));
                 break;
 
-            case "insert10000":
+            case "insert-10000":
                 start = System.currentTimeMillis();
                 for (int i = 1; i <= 10000; i++) {
                     byte[] src = "vertex0".getBytes();
@@ -225,9 +234,10 @@ public class ClientMain {
                     client.insert(src, EdgeType.OUT, dst, val);
                     client.insert(dst, EdgeType.IN, src, val);
                 }
-                GLogger.info("Insert10000 time: %d", (System.currentTimeMillis() - start));
+                GLogger.info("Insert-10000 time: %d", (System.currentTimeMillis() - start));
                 break;
-            case "insert100000":
+
+            case "insert-100000":
                 start = System.currentTimeMillis();
                 for (int i = 1; i <= 100000; i++) {
                     byte[] src = "vertex0".getBytes();
@@ -236,20 +246,14 @@ public class ClientMain {
                     client.insert(src, EdgeType.OUT, dst, val);
                     client.insert(dst, EdgeType.IN, src, val);
                 }
-                GLogger.info("Insert100000 time: %d", (System.currentTimeMillis() - start));
+                GLogger.info("Insert-100000 time: %d", (System.currentTimeMillis() - start));
                 break;
 
             case "scan":
                 start = System.currentTimeMillis();
                 List<KeyValue> r = client.scan((id).getBytes(), EdgeType.OUT);
-                GLogger.info("Scan %s time: %d Size: %d",
+                GLogger.info("Scan Vertex-%s time: %d return size: %d",
                         id, (System.currentTimeMillis() - start), r.size());
-                /*
-                for (KeyValue kv : r){
-                    DBKey tk = new DBKey(kv.getKey());
-                    System.out.println("dst: " + new String(tk.dst));
-                }
-                */
                 break;
 
             case "bfs":
@@ -263,67 +267,92 @@ public class ClientMain {
                 }
                 break;
 
-            case "travel":
-                /*
-                    First, Insert all edges.
-                */
-                br = new BufferedReader(new FileReader(graphFile));
-                start = System.currentTimeMillis();
-                int line_num = 0;
-                while ((line = br.readLine()) != null) {
-                    if (line.startsWith("#"))
-                        continue;
-
-                    String[] splits = line.split("\\W+");
-                    byte[] src = splits[0].getBytes();
-                    byte[] dst = splits[1].getBytes();
-
-                    client.insert(src, EdgeType.OUT, dst, val);
-                    client.insert(dst, EdgeType.IN, src, val);
-                    line_num += 2;
-
-                    if (line_num % 1000 == 2)
-                        GLogger.info("insert %d cost %d",
-                                line_num, (System.currentTimeMillis() - start));
-
-                }
-                GLogger.info("Insert time: %d", (System.currentTimeMillis() - start));
-
-                try {
-                    Thread.sleep(300);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
+            case "travel-2":
                 client.sync();
                 GLogger.info("Start Travel on vertex %s", id);
-                byte[] bEdge = ArrayPrimitives.itob(EdgeType.OUT.get());
-                GTravel gt = new GTravel();
-                gt.v((id).getBytes());
-                for (int i = 0; i < 10; i++) {
-                    gt.et(bEdge).next();
+                byte[] b2Edge = ArrayPrimitives.itob(EdgeType.OUT.get());
+                GTravel g2t = new GTravel();
+                g2t.v((id).getBytes());
+                for (int i = 0; i < 2; i++) {
+                    g2t.et(b2Edge).next();
                 }
-                gt.v();
-                long cost = client.bfs_travel(gt.plan());
-                GLogger.info("bfs takes: %d ms", cost);
+                g2t.v();
+                long cost2 = client.bfs_travel(g2t.plan());
+                GLogger.info("Travel-2 BFS from vertex-%d takes: %d ms", id, cost2);
                 break;
 
-            case "atravel":
+            case "travel-4":
+                client.sync();
+                GLogger.info("Start Travel on vertex %s", id);
+                byte[] b4Edge = ArrayPrimitives.itob(EdgeType.OUT.get());
+                GTravel g4t = new GTravel();
+                g4t.v((id).getBytes());
+                for (int i = 0; i < 4; i++) {
+                    g4t.et(b4Edge).next();
+                }
+                g4t.v();
+                long cost4 = client.bfs_travel(g4t.plan());
+                GLogger.info("Travel-2 BFS from vertex-%d takes: %d ms", id, cost4);
+                break;
+
+            case "travel-8":
+                client.sync();
+                GLogger.info("Start Travel on vertex %s", id);
+                byte[] b8Edge = ArrayPrimitives.itob(EdgeType.OUT.get());
+                GTravel g8t = new GTravel();
+                g8t.v((id).getBytes());
+                for (int i = 0; i < 8; i++) {
+                    g8t.et(b8Edge).next();
+                }
+                g8t.v();
+                long cost8 = client.bfs_travel(g8t.plan());
+                GLogger.info("Travel-2 BFS from vertex-%d takes: %d ms", id, cost8);
+                break;
+
+            case "atravel-2":
                 client.sync();
                 GLogger.info("Start Async Travel on vertex %s", id);
-                byte[] cEdge = ArrayPrimitives.itob(EdgeType.OUT.get());
-                GTravel agt = new GTravel();
-                agt.v((id).getBytes());
-                for (int i = 0; i < 10; i++) {
-                    agt.et(cEdge).next();
+                byte[] c2Edge = ArrayPrimitives.itob(EdgeType.OUT.get());
+                GTravel ag2t = new GTravel();
+                ag2t.v((id).getBytes());
+                for (int i = 0; i < 2; i++) {
+                    ag2t.et(c2Edge).next();
                 }
-                agt.v();
-                cost = client.abfs_travel(agt.plan());
-                GLogger.info("abfs takes: %d ms", cost);
+                ag2t.v();
+                long acost2 = client.abfs_travel(ag2t.plan());
+                GLogger.info("Travel-2 ABFS from vertex-%d takes: %d ms", id, acost2);
                 break;
+
+            case "atravel-4":
+                client.sync();
+                GLogger.info("Start Async Travel on vertex %s", id);
+                byte[] c4Edge = ArrayPrimitives.itob(EdgeType.OUT.get());
+                GTravel ag4t = new GTravel();
+                ag4t.v((id).getBytes());
+                for (int i = 0; i < 4; i++) {
+                    ag4t.et(c4Edge).next();
+                }
+                ag4t.v();
+                long acost4 = client.abfs_travel(ag4t.plan());
+                GLogger.info("Travel-4 ABFS from vertex-%d takes: %d ms", id, acost4);
+                break;
+
+            case "atravel-8":
+                client.sync();
+                GLogger.info("Start Async Travel on vertex %s", id);
+                byte[] c8Edge = ArrayPrimitives.itob(EdgeType.OUT.get());
+                GTravel ag8t = new GTravel();
+                ag8t.v((id).getBytes());
+                for (int i = 0; i < 8; i++) {
+                    ag8t.et(c8Edge).next();
+                }
+                ag8t.v();
+                long acost8 = client.abfs_travel(ag8t.plan());
+                GLogger.info("Travel-2 ABFS from vertex-%d takes: %d ms", id, acost8);
+                break;
+
             default:
                 System.out.println("Undefined Op!");
-
                 break;
         }
 

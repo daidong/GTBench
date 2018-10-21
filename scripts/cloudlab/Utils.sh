@@ -25,7 +25,7 @@ if [ "UPDATE" = $2 ]; then
 	for i in $(seq 0 $bound)
 	do
     	echo UPDATE Node$i
-    	ssh node$i "cd ~/simplegdb-Java; git pull" &
+    	ssh node$i "cd ~/GTBench; git pull" &
 	done
 fi
 
@@ -34,7 +34,7 @@ if [ "CLEAN" = $2 ]; then
 	for i in $(seq 0 $bound)
 	do
     	echo CLEAN Node$i
-    	ssh node$i "cd ~/simplegdb-Java; make clean" &
+    	ssh node$i "cd ~/GTBench; make clean" &
 	done
 fi
 
@@ -43,7 +43,7 @@ if [ "UPDATE-COMPILE" = $2 ]; then
 	for i in $(seq 0 $bound)
 	do
     	echo UPDATE Node$i
-    	ssh node$i "cd ~/simplegdb-Java; git pull; make all" &
+    	ssh node$i "cd ~/GTBench; git pull; make all" &
 	done
 fi
 

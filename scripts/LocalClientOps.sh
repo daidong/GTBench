@@ -52,4 +52,4 @@ do
 done
 
 # echo "-type ${server_type} -op $op -id $id -graph ${graph_file} -srvlist $seeds"
-~/Documents/gitrepos/simplegdb-Java/release/sgdb-0.1/bin/client.sh -type ${server_type} -op $op -id $id -graph ${graph_file} -srvlist $seeds
+~/Documents/gitrepos/GTBench/release/sgdb-0.1/bin/client.sh -type ${server_type} -op $op -id $id -graph ${graph_file} -srvlist $seeds

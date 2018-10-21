@@ -52,7 +52,7 @@ localdb=${localdir}/sgdb
 
 for i in $(seq 0 $bound)
 do
-    echo Start Simplegdb-Java server on node$i
+    echo Start GTBench server on node$i
     ssh node$i "mkdir -p $localdir"
-    ssh node$i "~/simplegdb-Java/release/sgdb-0.1/bin/server.sh start -db $localdb -id $i -type ${server_type} -srvlist $seeds" &
+    ssh node$i "~/GTBench/release/sgdb-0.1/bin/server.sh start -db $localdb -id $i -type ${server_type} -srvlist $seeds" &
 done

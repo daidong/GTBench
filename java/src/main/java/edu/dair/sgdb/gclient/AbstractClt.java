@@ -5,6 +5,7 @@ import edu.dair.sgdb.tengine.travel.JSONCommand;
 import edu.dair.sgdb.tengine.travel.SingleStep;
 import edu.dair.sgdb.thrift.KeyValue;
 import edu.dair.sgdb.thrift.TGraphFSServer;
+import edu.dair.sgdb.utils.Constants;
 import edu.dair.sgdb.utils.GLogger;
 import edu.dair.sgdb.utils.JenkinsHash;
 import org.apache.thrift.TException;
@@ -19,6 +20,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public abstract class AbstractClt {
 
@@ -28,6 +31,8 @@ public abstract class AbstractClt {
     public ArrayList<String> allSrvs;
     public int port;
     public int serverNum;
+
+    public ExecutorService workerPool;
 
     public AbstractClt(int port, ArrayList<String> alls) {
         this.allSrvs = alls;
@@ -62,6 +67,10 @@ public abstract class AbstractClt {
                 e.printStackTrace();
             }
         }
+
+        int procs = Runtime.getRuntime().availableProcessors();
+        procs = Math.max(procs, 1);
+        this.workerPool = Executors.newFixedThreadPool(Constants.WORKER_THREAD_FACTOR * procs);
 
     }
 
