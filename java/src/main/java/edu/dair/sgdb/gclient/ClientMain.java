@@ -292,7 +292,7 @@ public class ClientMain {
                 }
                 g4t.v();
                 long cost4 = client.bfs_travel(g4t.plan());
-                GLogger.info("Travel-2 BFS from vertex-%s takes: %d ms", id, cost4);
+                GLogger.info("Travel-4 BFS from vertex-%s takes: %d ms", id, cost4);
                 break;
 
             case "travel-8":
@@ -306,7 +306,7 @@ public class ClientMain {
                 }
                 g8t.v();
                 long cost8 = client.bfs_travel(g8t.plan());
-                GLogger.info("Travel-2 BFS from vertex-%s takes: %d ms", id, cost8);
+                GLogger.info("Travel-8 BFS from vertex-%s takes: %d ms", id, cost8);
                 break;
 
             case "atravel-2":
@@ -348,7 +348,7 @@ public class ClientMain {
                 }
                 ag8t.v();
                 long acost8 = client.abfs_travel(ag8t.plan());
-                GLogger.info("Travel-2 ABFS from vertex-%s takes: %d ms", id, acost8);
+                GLogger.info("Travel-8 ABFS from vertex-%s takes: %d ms", id, acost8);
                 break;
 
             default:
