@@ -278,7 +278,7 @@ public class ClientMain {
                 }
                 g2t.v();
                 long cost2 = client.bfs_travel(g2t.plan());
-                GLogger.info("Travel-2 BFS from vertex-%d takes: %d ms", id, cost2);
+                GLogger.info("Travel-2 BFS from vertex-%s takes: %d ms", id, cost2);
                 break;
 
             case "travel-4":
@@ -292,7 +292,7 @@ public class ClientMain {
                 }
                 g4t.v();
                 long cost4 = client.bfs_travel(g4t.plan());
-                GLogger.info("Travel-2 BFS from vertex-%d takes: %d ms", id, cost4);
+                GLogger.info("Travel-2 BFS from vertex-%s takes: %d ms", id, cost4);
                 break;
 
             case "travel-8":
@@ -306,7 +306,7 @@ public class ClientMain {
                 }
                 g8t.v();
                 long cost8 = client.bfs_travel(g8t.plan());
-                GLogger.info("Travel-2 BFS from vertex-%d takes: %d ms", id, cost8);
+                GLogger.info("Travel-2 BFS from vertex-%s takes: %d ms", id, cost8);
                 break;
 
             case "atravel-2":
@@ -320,7 +320,7 @@ public class ClientMain {
                 }
                 ag2t.v();
                 long acost2 = client.abfs_travel(ag2t.plan());
-                GLogger.info("Travel-2 ABFS from vertex-%d takes: %d ms", id, acost2);
+                GLogger.info("Travel-2 ABFS from vertex-%s takes: %d ms", id, acost2);
                 break;
 
             case "atravel-4":
@@ -334,7 +334,7 @@ public class ClientMain {
                 }
                 ag4t.v();
                 long acost4 = client.abfs_travel(ag4t.plan());
-                GLogger.info("Travel-4 ABFS from vertex-%d takes: %d ms", id, acost4);
+                GLogger.info("Travel-4 ABFS from vertex-%s takes: %d ms", id, acost4);
                 break;
 
             case "atravel-8":
@@ -348,7 +348,7 @@ public class ClientMain {
                 }
                 ag8t.v();
                 long acost8 = client.abfs_travel(ag8t.plan());
-                GLogger.info("Travel-2 ABFS from vertex-%d takes: %d ms", id, acost8);
+                GLogger.info("Travel-2 ABFS from vertex-%s takes: %d ms", id, acost8);
                 break;
 
             default:
