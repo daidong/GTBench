@@ -6,8 +6,11 @@ import edu.dair.sgdb.utils.GLogger;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class GigaIndex {
+
     public class VirtualNodeStatus {
 
         public short size;
@@ -52,26 +55,26 @@ public class GigaIndex {
             return (has_split == (byte) 1);
         }
 
-        public synchronized boolean needSplit() {
+        public boolean needSplit() {
             return (size >= Constants.Count_Threshold && this.isSplit == (byte) 0);
         }
 
-        public synchronized int incr_size() {
+        public int incr_size() {
             size += 1;
             return size;
         }
 
-        public synchronized int incr_size(int s) {
+        public int incr_size(int s) {
             size += s;
             return size;
         }
 
-        public synchronized int decr_size(int s) {
+        public int decr_size(int s) {
             size -= s;
             return size;
         }
 
-        public synchronized int halv_size() {
+        public int halv_size() {
             size /= 2;
             return size;
         }
@@ -109,11 +112,11 @@ public class GigaIndex {
             return (this.split_from == (byte) 1);
         }
 
-        public synchronized int incr_counter() {
+        public int incr_counter() {
             return ++countsWhileSplitting;
         }
 
-        public synchronized int reset_counter() {
+        public int reset_counter() {
             countsWhileSplitting = 0;
             return 0;
         }
@@ -137,6 +140,8 @@ public class GigaIndex {
 
     public byte[] bitmap = new byte[Constants.MAX_BMAP_LEN / 8];
     public HashMap<Short, VirtualNodeStatus> virt;
+    Lock lock_virt = null;
+
     public int serverNum;
     public int startServer;
 
@@ -145,6 +150,7 @@ public class GigaIndex {
         this.serverNum = serverNum;
         this.bitmap[0] = (byte) (1 << 7);
         virt = new HashMap<>();
+        lock_virt = new ReentrantLock();
     }
 
     public GigaIndex(byte[] byteArray) {
@@ -158,6 +164,7 @@ public class GigaIndex {
         offset += 4;
 
         this.serverNum = ArrayPrimitives.btoi(byteArray, offset);
+        this.lock_virt = new ReentrantLock();
     }
 
     // do not serialize virtual node status as it can be rebuilt by scanning the whole db.
@@ -181,21 +188,27 @@ public class GigaIndex {
         return array;
     }
 
-    public VirtualNodeStatus surelyGetVirtNodeStatus(int vnode) {
-        synchronized (virt) {
+    public VirtualNodeStatus get_vnode_status(int vnode) {
+        this.lock_virt.lock();
+        try {
             if (!virt.containsKey((short) vnode)) {
                 virt.put((short) vnode, new VirtualNodeStatus((short) 0));
             }
+        } finally {
+            this.lock_virt.unlock();
             return virt.get((short) vnode);
         }
     }
 
     public void add_vid_count(int vnode) {
-        synchronized (virt) {
+        this.lock_virt.lock();
+        try {
             if (!virt.containsKey((short) vnode)) {
                 virt.put((short) vnode, new VirtualNodeStatus((short) 0));
             }
+        } finally {
             virt.get((short) vnode).size += 1;
+            this.lock_virt.unlock();
         }
     }
 

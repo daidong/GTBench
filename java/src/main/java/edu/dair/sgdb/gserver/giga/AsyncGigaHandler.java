@@ -5,7 +5,6 @@ import edu.dair.sgdb.partitioner.GigaIndex;
 import edu.dair.sgdb.sengine.DBKey;
 import edu.dair.sgdb.tengine.abfs.abfs;
 import edu.dair.sgdb.tengine.bfs.bfs;
-import edu.dair.sgdb.tengine.sync.SyncTravelEngine;
 import edu.dair.sgdb.thrift.*;
 import edu.dair.sgdb.utils.Constants;
 import edu.dair.sgdb.utils.GLogger;
@@ -26,14 +25,12 @@ public class AsyncGigaHandler extends BaseHandler {
         this.instance = s;
         this.bfs_engine = new bfs(s);
         this.abfs_engine = new abfs(s);
-        this.syncEngine = new SyncTravelEngine(s);
-        //this.asyncEngine = new AsyncTravelEngine(s);
     }
 
     private int isLocalAndGetIndex(byte[] src, byte[] dst) {
         JenkinsHash jh = new JenkinsHash();
         int dstHash = Math.abs(jh.hash32(dst));
-        GigaIndex gi = instance.surelyGetGigaMap(src);
+        GigaIndex gi = instance.get_giga_index_4_vertex(src);
         int index = 0;
         int server = 0;
         index = gi.giga_get_index_for_hash(dstHash);
@@ -47,7 +44,7 @@ public class AsyncGigaHandler extends BaseHandler {
     private int getIndex(byte[] src, byte[] dst) {
         JenkinsHash jh = new JenkinsHash();
         int dstHash = Math.abs(jh.hash32(dst));
-        GigaIndex gi = instance.surelyGetGigaMap(src);
+        GigaIndex gi = instance.get_giga_index_4_vertex(src);
         int index = gi.giga_get_index_for_hash(dstHash);
         return index;
     }
@@ -92,8 +89,9 @@ public class AsyncGigaHandler extends BaseHandler {
         byte[] bdst = NIOHelper.getActiveArray(dst);
         byte[] bval = NIOHelper.getActiveArray(val);
 
-        GigaIndex gi = instance.surelyGetGigaMap(bsrc);
+        GigaIndex gi = instance.get_giga_index_4_vertex(bsrc);
         int index = 0, vid = -1, new_index = -1, new_server = -1, new_vid = -1;
+
         GigaIndex.VirtualNodeStatus vns = null;
         boolean needSplit = false;
         int vertexRootServer = gi.startServer % gi.serverNum;
@@ -107,7 +105,7 @@ public class AsyncGigaHandler extends BaseHandler {
             }
 
             vid = gi.giga_get_vid_from_index(index);
-            vns = gi.surelyGetVirtNodeStatus(vid);
+            vns = gi.get_vnode_status(vid);
 
             synchronized (vns) {  //lock to avoid conflicts with SplitWorker thread.
                 if (vns.is_splitting_to()) {
@@ -124,7 +122,7 @@ public class AsyncGigaHandler extends BaseHandler {
                         needSplit = true;
 
                         vns.split_to();
-                        GigaIndex.VirtualNodeStatus nvns = gi.surelyGetVirtNodeStatus(new_vid);
+                        GigaIndex.VirtualNodeStatus nvns = gi.get_vnode_status(new_vid);
                         nvns.split_from();
                         // persistent GigaIndex once it is changed.
                         persistentGigaIndex(bsrc, gi);
@@ -157,7 +155,7 @@ public class AsyncGigaHandler extends BaseHandler {
         instance.localStore.put(newKey.toKey(), bval);
 
         //instance.METRICS.meter("GigaInsert").mark();
-        return Constants.RTN_SUCC;
+        return 0;
     }
 
 
@@ -173,17 +171,17 @@ public class AsyncGigaHandler extends BaseHandler {
 
         List<KeyValue> rtn = new ArrayList<KeyValue>();
 
-        GigaIndex gi = instance.surelyGetGigaMap(bsrc);
+        GigaIndex gi = instance.get_giga_index_4_vertex(bsrc);
 
         synchronized (gi) {
             int index = getIndex(bsrc, bdst);
             int server = gi.giga_get_server_from_index(index);
             int vid = gi.giga_get_vid_from_index(index);
-            GigaIndex.VirtualNodeStatus vns = gi.surelyGetVirtNodeStatus(vid);
+            GigaIndex.VirtualNodeStatus vns = gi.get_vnode_status(vid);
 
             int p_index = gi.get_parent_index(index);
             int p_vid = gi.giga_get_vid_from_index(p_index);
-            GigaIndex.VirtualNodeStatus pvns = gi.surelyGetVirtNodeStatus(p_vid);
+            GigaIndex.VirtualNodeStatus pvns = gi.get_vnode_status(p_vid);
 
             if (server != instance.getLocalIdx()) {
 
@@ -246,7 +244,7 @@ public class AsyncGigaHandler extends BaseHandler {
         DBKey endKey = DBKey.MaxDBKey(bsrc, type);
 
         ArrayList<KeyValue> kvs = instance.localStore.scanKV(startKey.toKey(), endKey.toKey());
-        GigaIndex gi = instance.surelyGetGigaMap(bsrc);
+        GigaIndex gi = instance.get_giga_index_4_vertex(bsrc);
 
         gs.setKvs(kvs);
         gs.setBitmap(gi.bitmap);
@@ -259,15 +257,15 @@ public class AsyncGigaHandler extends BaseHandler {
     public int giga_split(ByteBuffer src, int vid, int stage, ByteBuffer bitmap) throws TException {
         byte[] bsrc = NIOHelper.getActiveArray(src);
 
-        GigaIndex gi = instance.surelyGetGigaMap(bsrc);
+        GigaIndex gi = instance.get_giga_index_4_vertex(bsrc);
         if (stage == Constants.SPLIT_START) {
             byte[] bbitmap = NIOHelper.getActiveArray(bitmap);
             gi.giga_update_bitmap(bbitmap);
-            GigaIndex.VirtualNodeStatus vns = gi.surelyGetVirtNodeStatus(vid);
+            GigaIndex.VirtualNodeStatus vns = gi.get_vnode_status(vid);
             vns.split_from();
 
         } else if (stage == Constants.SPLIT_END) {
-            GigaIndex.VirtualNodeStatus vns = gi.surelyGetVirtNodeStatus(vid);
+            GigaIndex.VirtualNodeStatus vns = gi.get_vnode_status(vid);
             vns.finish_split_from();
 
         } else if (stage == Constants.REPORT_SPLIT) {
@@ -288,8 +286,8 @@ public class AsyncGigaHandler extends BaseHandler {
         }
         //instance.localStore.batch_put(batches);
 
-        GigaIndex gi = instance.surelyGetGigaMap(bsrc);
-        GigaIndex.VirtualNodeStatus vns = gi.surelyGetVirtNodeStatus(vid);
+        GigaIndex gi = instance.get_giga_index_4_vertex(bsrc);
+        GigaIndex.VirtualNodeStatus vns = gi.get_vnode_status(vid);
         synchronized (vns) {
             vns.incr_size(batches.size());
         }
@@ -306,8 +304,8 @@ public class AsyncGigaHandler extends BaseHandler {
     @Override
     public int giga_batch_insert(ByteBuffer src, int vid, List<KeyValue> batches) throws TException {
         byte[] bsrc = NIOHelper.getActiveArray(src);
-        GigaIndex gi = instance.surelyGetGigaMap(bsrc);
-        GigaIndex.VirtualNodeStatus vns = gi.surelyGetVirtNodeStatus(vid);
+        GigaIndex gi = instance.get_giga_index_4_vertex(bsrc);
+        GigaIndex.VirtualNodeStatus vns = gi.get_vnode_status(vid);
 
         //for (KeyValue kv : batches) {
         //    instance.localStore.put(kv.getKey(), kv.getValue());
@@ -350,9 +348,9 @@ public class AsyncGigaHandler extends BaseHandler {
 
         @Override
         public void run() {
-            GigaIndex gi = instance.surelyGetGigaMap(src);
-            GigaIndex.VirtualNodeStatus currVns = gi.surelyGetVirtNodeStatus(currVid);
-            GigaIndex.VirtualNodeStatus newVns = gi.surelyGetVirtNodeStatus(newVid);
+            GigaIndex gi = instance.get_giga_index_4_vertex(src);
+            GigaIndex.VirtualNodeStatus currVns = gi.get_vnode_status(currVid);
+            GigaIndex.VirtualNodeStatus newVns = gi.get_vnode_status(newVid);
             JenkinsHash jh = new JenkinsHash();
 
             DBKey startKey = DBKey.MinDBKey(src);

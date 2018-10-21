@@ -1,6 +1,5 @@
 #!/bin/sh
 #
-# author zhangwei
 PRG="$0"
 
 while [ -h "$PRG" ] ; do

@@ -32,50 +32,6 @@ struct Status{
   2: i32 issplit,
   3: i32 location,
 }
-/*
- * Travel
- */
-struct EpochEntity{
-    1: required i32 serverId,
-    2: required i32 epoch,
-}
-
-enum TravelCommandType {
-    TRAVEL = 1,
-    TRAVEL_MASTER = 2,
-    TRAVEL_RTN = 3,
-    TRAVEL_REG = 4,
-    TRAVEL_FIN = 5,
-    TRAVEL_NEXT = 6,
-    TRAVEL_EXTEND = 7,
-    TRAVEL_LAST = 8,
-
-    SYNC_TRAVEL = 9,
-    SYNC_TRAVEL_MASTER = 10,
-    SYNC_TRAVEL_RTN = 11,
-    SYNC_TRAVEL_START = 12,
-    SYNC_TRAVEL_EXTEND = 13,
-    SYNC_TRAVEL_FINISH = 14,
-
-    TRAVEL_DEL = 15,
-    TRAVEL_SYNC_DEL = 16,
-}
-
-struct TravelCommand {
-    1: required TravelCommandType type,
-    2: required i64 travelId,
-    3: required i32 stepId,
-    4: optional i32 reply_to,
-    5: optional i32 get_from,
-    6: optional string payload,
-    7: optional i64 ts,
-    8: optional list<i32> ext_srv,
-    9: optional list<KeyValue> vals,
-    10: optional list<binary> keys,
-    11: optional i32 sub_type,
-    12: optional i32 local_id,
-    13: optional list<EpochEntity> epoch,
-}
 
 service TGraphFSServer {
     i32 echo(1:i32 s, 2:binary payload),
@@ -97,22 +53,6 @@ service TGraphFSServer {
     i32 iogp_reassign(1:binary src, 2:i32 type, 3:i32 target),
     i32 iogp_fennel(1:binary src) throws (1: RedirectException r),
     i32 iogp_syncstatus(1: list<Status> statuses) throws (1: RedirectException r),
-
-
-    i32 travel(1:TravelCommand tc),
-	i32 travelMaster(1:TravelCommand tc),
-	i32 travelRtn(1:TravelCommand tc),
-	i32 travelReg(1:TravelCommand tc),
-	i32 travelFin(1:TravelCommand tc),
-	i32 deleteTravelInstance(1:TravelCommand tc),
-
-    i32 syncTravel(1:TravelCommand tc),
-    i32 syncTravelMaster(1:TravelCommand tc),
-    i32 syncTravelRtn(1:TravelCommand tc),
-    i32 syncTravelStart(1:TravelCommand tc),
-    i32 syncTravelExtend(1:TravelCommand tc),
-    i32 syncTravelFinish(1:TravelCommand tc),
-    i32 deleteSyncTravelInstance(1:TravelCommand tc),
 
     i32 travel_master(1:i64 tid, 2:string payload),
     i32 travel_vertices(1:i64 tid, 2:i32 sid, 3:set<binary> keys, 4:string payload),

@@ -27,7 +27,6 @@ import edu.dair.sgdb.utils.JenkinsHash;
 public class GIGASrv extends AbstractSrv {
 
     public ConcurrentHashMap<ByteBuffer, GigaIndex> gigaMaps;
-    public GigaSplitWorker worker;
 
     public GIGASrv() {
         super();
@@ -41,19 +40,16 @@ public class GIGASrv extends AbstractSrv {
     }
 
 
-    protected GigaIndex surelyGetGigaMap(byte[] bsrc) {
-        ByteBuffer src = ByteBuffer.wrap(bsrc);
-        int startIdx = getHashLocation(bsrc, Constants.MAX_VIRTUAL_NODE);
-        GigaIndex t = this.gigaMaps.putIfAbsent(src, new GigaIndex(startIdx, this.serverNum));
-        if (t == null) {
-            return this.gigaMaps.get(src);
-        }
-        return t;
+    protected GigaIndex get_giga_index_4_vertex(byte[] bsrc) {
+        this.gigaMaps.putIfAbsent(
+                ByteBuffer.wrap(bsrc),
+                new GigaIndex(getHashLocation(bsrc, Constants.MAX_VIRTUAL_NODE), this.serverNum));
+        return gigaMaps.get(ByteBuffer.wrap(bsrc));
     }
 
     @Override
     public Set<Integer> getEdgeLocs(byte[] src, int type) {
-        GigaIndex gi = surelyGetGigaMap(src);
+        GigaIndex gi = get_giga_index_4_vertex(src);
         Set<Integer> locs = gi.giga_get_all_servers();
         return locs;
     }
@@ -105,7 +101,7 @@ public class GIGASrv extends AbstractSrv {
                 }
                 JenkinsHash jh = new JenkinsHash();
                 int dstHash = Math.abs(jh.hash32(dst));
-                GigaIndex gi = surelyGetGigaMap(src);;
+                GigaIndex gi = get_giga_index_4_vertex(src);;
                 int vid = gi.giga_get_vid_from_hash(dstHash);
                 gi.add_vid_count(vid);
             }

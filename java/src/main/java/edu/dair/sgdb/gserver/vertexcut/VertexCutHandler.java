@@ -4,7 +4,6 @@ import edu.dair.sgdb.gserver.BaseHandler;
 import edu.dair.sgdb.sengine.DBKey;
 import edu.dair.sgdb.tengine.abfs.abfs;
 import edu.dair.sgdb.tengine.bfs.bfs;
-import edu.dair.sgdb.tengine.sync.SyncTravelEngine;
 import edu.dair.sgdb.thrift.*;
 import edu.dair.sgdb.utils.Constants;
 import edu.dair.sgdb.utils.NIOHelper;
@@ -22,8 +21,6 @@ public class VertexCutHandler extends BaseHandler {
         this.instance = s;
         this.bfs_engine = new bfs(s);
         this.abfs_engine = new abfs(s);
-        this.syncEngine = new SyncTravelEngine(s);
-        //this.asyncEngine = new AsyncTravelEngine(s);
     }
 
     @Override
@@ -41,7 +38,7 @@ public class VertexCutHandler extends BaseHandler {
     @Override
     public int batch_insert(List<KeyValue> batches, int type) throws RedirectException, TException {
         instance.localStore.batch_put(batches);
-        return Constants.RTN_SUCC;
+        return 0;
     }
 
 
@@ -97,8 +94,6 @@ public class VertexCutHandler extends BaseHandler {
     public int giga_batch_insert(ByteBuffer src, int vid, List<KeyValue> batches) throws RedirectException, TException {
         throw new UnsupportedOperationException("Not supported by this server.");
     }
-
-
 
     /*
      * IOGP Interfaces

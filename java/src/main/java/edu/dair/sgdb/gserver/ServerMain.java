@@ -168,7 +168,6 @@ public class ServerMain {
         } else {
             List<Thread> tlist = new ArrayList<>();
             for (int i = 0; i < threads; i++) {
-                //TODO: ensure that the dbFile in distributed server are only used by itself.
                 // if it is, then no need to change "dbFile + i" here.
                 Thread t = new Thread(new ServerExecutable(type, dbFile + i, i, allsrvs));
                 t.start();

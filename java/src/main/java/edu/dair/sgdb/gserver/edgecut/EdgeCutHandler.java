@@ -3,7 +3,6 @@ package edu.dair.sgdb.gserver.edgecut;
 import edu.dair.sgdb.sengine.DBKey;
 import edu.dair.sgdb.tengine.abfs.abfs;
 import edu.dair.sgdb.tengine.bfs.bfs;
-import edu.dair.sgdb.tengine.sync.SyncTravelEngine;
 import edu.dair.sgdb.gserver.BaseHandler;
 import edu.dair.sgdb.thrift.*;
 import edu.dair.sgdb.utils.Constants;
@@ -22,7 +21,6 @@ public class EdgeCutHandler extends BaseHandler {
         this.instance = s;
         this.bfs_engine = new bfs(s);
         this.abfs_engine = new abfs(s);
-        this.syncEngine = new SyncTravelEngine(s);
     }
 
     /*
@@ -67,7 +65,7 @@ public class EdgeCutHandler extends BaseHandler {
     @Override
     public int batch_insert(List<KeyValue> batches, int type) throws TException {
         instance.localStore.batch_put(batches);
-        return Constants.RTN_SUCC;
+        return 0;
     }
 
     @Override

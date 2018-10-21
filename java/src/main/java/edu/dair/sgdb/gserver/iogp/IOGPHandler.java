@@ -3,7 +3,6 @@ package edu.dair.sgdb.gserver.iogp;
 import edu.dair.sgdb.sengine.DBKey;
 import edu.dair.sgdb.tengine.abfs.abfs;
 import edu.dair.sgdb.tengine.bfs.bfs;
-import edu.dair.sgdb.tengine.sync.SyncTravelEngine;
 import edu.dair.sgdb.gserver.BaseHandler;
 import edu.dair.sgdb.gserver.EdgeType;
 import edu.dair.sgdb.thrift.*;
@@ -24,7 +23,6 @@ public class IOGPHandler extends BaseHandler {
         this.inst = s;
         this.bfs_engine = new bfs(s);
         this.abfs_engine = new abfs(s);
-        this.syncEngine = new SyncTravelEngine(s);
     }
 
     @Override

@@ -5,8 +5,6 @@ import edu.dair.sgdb.tengine.travel.JSONCommand;
 import edu.dair.sgdb.tengine.travel.SingleStep;
 import edu.dair.sgdb.thrift.KeyValue;
 import edu.dair.sgdb.thrift.TGraphFSServer;
-import edu.dair.sgdb.thrift.TravelCommand;
-import edu.dair.sgdb.thrift.TravelCommandType;
 import edu.dair.sgdb.utils.GLogger;
 import edu.dair.sgdb.utils.JenkinsHash;
 import org.apache.thrift.TException;
@@ -45,7 +43,7 @@ public abstract class AbstractClt {
 
             //TTransport transport = new TSocket(addr, port);
             TTransport transport = new TFramedTransport(new TSocket(addr, this.port),
-                    1024 * 1024 * 1024);
+                    2 * 1024 * 1024);
             try {
                 transport.open();
             } catch (TTransportException e) {
@@ -84,60 +82,6 @@ public abstract class AbstractClt {
     abstract public List<ByteBuffer> bfs(byte[] srcVertex, EdgeType edgeType, int max_steps) throws TException;
 
     abstract public int sync() throws TException;
-
-    public int submitTravel(List<SingleStep> travelPlan) throws TException {
-        long ts = System.currentTimeMillis();
-        return submitTravel(travelPlan, ts);
-    }
-
-    public int submitTravel(List<SingleStep> travelPlan, long ts) throws TException {
-        TravelCommand tc = new TravelCommand();
-        long tid = System.currentTimeMillis();
-
-        JSONArray array = new JSONArray();
-        for (SingleStep ss : travelPlan) {
-            JSONObject jo = new JSONObject();
-            jo.put("value", ss.genJSON());
-            array.add(jo);
-        }
-        JSONCommand jc = new JSONCommand();
-        jc.add("travel_payload", array);
-
-        tc.setType(TravelCommandType.TRAVEL_MASTER)
-                .setTravelId(0L).setStepId(0).setReply_to(0)
-                .setTs(ts).setPayload(jc.genString());
-        int serverId = Math.abs((int) tid) % this.serverNum;
-        getClientConn(serverId).syncTravelMaster(tc);
-        return 0;
-    }
-
-    /*
-    public int submitSyncTravel(List<SingleStep> travelPlan) throws TException {
-        long ts = System.currentTimeMillis();
-        return submitSyncTravel(travelPlan, ts);
-    }
-
-    public int submitSyncTravel(List<SingleStep> travelPlan, long ts) throws TException {
-        TravelCommand tc = new TravelCommand();
-        long tid = System.currentTimeMillis();
-
-        JSONArray array = new JSONArray();
-        for (SingleStep ss : travelPlan) {
-            JSONObject jo = new JSONObject();
-            jo.put("value", ss.genJSON());
-            array.add(jo);
-        }
-        JSONCommand jc = new JSONCommand();
-        jc.add("travel_payload", array);
-
-        tc.setType(TravelCommandType.SYNC_TRAVEL_MASTER)
-                .setTravelId(0L).setStepId(0).setReply_to(0)
-                .setTs(ts).setPayload(jc.genString());
-        int serverId = Math.abs((int) tid) % this.serverNum;
-        getClientConn(serverId).syncTravelMaster(tc);
-        return 0;
-    }
-    */
 
     public int bfs_travel(List<SingleStep> travelPlan) throws TException {
         long ts = System.currentTimeMillis();
