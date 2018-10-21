@@ -24,7 +24,7 @@ public class bfs {
     HashMap<Long, HashSet<ByteBuffer>> vertices_to_travel = null;
     Lock lock_vertices_to_travel = null;
 
-    boolean preload_enabled = true;
+    boolean preload_enabled = false;
     HashSet<ByteBuffer> preloaded_caches = null;
     Lock lock_preloaded_caches = null;
     ArrayList<Thread> preload_threads = null;
@@ -142,10 +142,10 @@ public class bfs {
             lock_and_wait lw = new lock_and_wait(pending_to_finish);
 
             for (int s : servers_list_1){
-                instance.workerPool.execute(new thread_start_step(tid,
-                        current_step, payload, instance,
-                        lw,
-                        servers_list_2, s));
+                instance.workerPool.execute(
+                        new thread_start_step(tid,
+                                current_step, payload, instance,lw,
+                                servers_list_2, s));
             }
 
             lw.wait_until_finish();
