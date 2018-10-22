@@ -24,7 +24,7 @@ public class bfs {
     HashMap<Long, HashSet<ByteBuffer>> vertices_to_travel = null;
     Lock lock_vertices_to_travel = null;
 
-    boolean preload_enabled = false;
+    boolean preload_enabled = true;
     HashSet<ByteBuffer> preloaded_caches = null;
     Lock lock_preloaded_caches = null;
     ArrayList<Thread> preload_threads = null;
