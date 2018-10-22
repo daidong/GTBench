@@ -200,9 +200,9 @@ public class bfs {
         
         // shutdown the prefetcher
         for (Thread t : this.preload_threads) {
-            t.interrupt();
+            if (t != null)
+                t.interrupt();
         }
-        this.preload_threads.clear();
 
         ArrayList<SingleStep> travelPlan = build_travel_plan_from_json_string(payload);
         SingleStep currStep = travelPlan.get(sid);
@@ -274,6 +274,7 @@ public class bfs {
             //clear the preloaded_caches
             this.lock_preloaded_caches.lock();
             this.preloaded_caches.clear();
+            this.preload_threads.clear();
             this.lock_preloaded_caches.unlock();
         }
 
