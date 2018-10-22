@@ -17,10 +17,10 @@
 ~/GTBench/scripts/cloudlab/ClientOps.sh -n 8 -t edgecut -o travel-2 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
 ~/GTBench/scripts/cloudlab/ClientOps.sh -n 8 -t edgecut -o atravel-8 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
 
-/users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n 8 -t edgecut -d ~/dbs/dbs-as-skitter/
-~/GTBench/scripts/cloudlab/ClientOps.sh -n 8 -t edgecut -o insert-graph -c 0 -g /proj/dirr-PG0/datasets/as-skitter.txt
-~/GTBench/scripts/cloudlab/ClientOps.sh -n 8 -t edgecut -o travel-2 -c 0 -g /proj/dirr-PG0/datasets/as-skitter.txt
-~/GTBench/scripts/cloudlab/ClientOps.sh -n 8 -t edgecut -o atravel-2 -c 0 -g /proj/dirr-PG0/datasets/as-skitter.txt
+/users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n 8 -t edgecut -d ~/dbs/dbs-amazon0302/
+~/GTBench/scripts/cloudlab/ClientOps.sh -n 8 -t edgecut -o insert-graph -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
+~/GTBench/scripts/cloudlab/ClientOps.sh -n 8 -t edgecut -o travel-2 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
+~/GTBench/scripts/cloudlab/ClientOps.sh -n 8 -t edgecut -o atravel-2 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
 
 ~/Documents/gitrepos/GTBench/scripts/LocalClientOps.sh -n 8 -t edgecut -o travel -c 0 -g ~/Documents/p2p-Gnutella04.txt
 ~/Documents/gitrepos/GTBench/scripts/LocalClientOps.sh -n 8 -t edgecut -o atravel -c 0 -g ~/Documents/p2p-Gnutella04.txt

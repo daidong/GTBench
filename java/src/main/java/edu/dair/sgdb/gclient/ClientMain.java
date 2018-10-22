@@ -173,7 +173,7 @@ public class ClientMain {
         BufferedReader br;
 
         String payload_string = "";
-        for (int i = 0; i < 128; i++) payload_string += "aaaaaaaaaa";
+        for (int i = 0; i < 128; i++) payload_string += "a";
         byte[] val = payload_string.getBytes();
 
         switch (op) {
