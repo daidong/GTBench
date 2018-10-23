@@ -116,12 +116,12 @@ sleep 10
 sleep 30
 
 if [ $type = "ASYNC" ]; then
-    /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t vertexcut -d ~/dbs/
-    sleep 30
-    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t vertexcut -o atravel-2 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
-    sleep 10
-    /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
-    sleep 30
+    #/users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t vertexcut -d ~/dbs/
+    #sleep 30
+    #~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t vertexcut -o atravel-2 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
+    #sleep 10
+    #/users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
+    #sleep 30
 
     /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t vertexcut -d ~/dbs/
     sleep 30
