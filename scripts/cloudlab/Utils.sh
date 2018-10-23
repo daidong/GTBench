@@ -74,3 +74,11 @@ if [ "LIMIT" = $2 ]; then
 	done
 fi
 
+# Remove PID file
+if [ "RMPID" = $2 ]; then
+	for i in $(seq 0 $bound)
+	do
+    	echo RM PID file on Node$i
+    	ssh node$i "rm ~/tmp/sgdbsrv.pid"
+	done
+fi
