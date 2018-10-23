@@ -13,7 +13,7 @@ bound=`expr $1 - 1 + 1`
 # Test-Case 1: Run on $bound r$bound0 nodes to check the performance of BFS with prefetching enabled.
 
 ## Case 1: edgecut
-echo "Case 1: EdgeCut"
+ echo "Case 1: EdgeCut"
 /users/dirruncc/GTBench/scripts/cloudlab/Utils.sh $bound RM
 sleep 5
 
@@ -66,10 +66,8 @@ sleep 10
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
 
-
 #~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t edgecut -o travel-2 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
 #~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t edgecut -o atravel-$bound -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
-
 #~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t edgecut -o insert-graph -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
 #~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t edgecut -o travel-4 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
 #~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t edgecut -o atravel-4 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
@@ -240,6 +238,9 @@ sleep 30
 sleep 10
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
+
+
+/users/dirruncc/GTBench/scripts/cloudlab/Utils.sh $bound RM
 
 #// dido
 #/users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t dido -d ~/dbs/
