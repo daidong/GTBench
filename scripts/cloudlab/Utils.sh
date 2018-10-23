@@ -82,3 +82,13 @@ if [ "RMPID" = $2 ]; then
     	ssh node$i "rm /tmp/sgdbsrv.pid"
 	done
 fi
+
+# Kill Server Process
+if [ "KILL" = $2 ]; then
+	for i in $(seq 0 $bound)
+	do
+    	echo Kill on Node$i
+    	ssh node$i "pkill java"
+	done
+fi
+
