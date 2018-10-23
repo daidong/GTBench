@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 bound=`expr $1 - 1 + 1`
-type="SYNC"
+type=SYNC
 
 if [ $type = "SNYC" ]; then
     echo "DO NOT EXECUTE ASYNC"
@@ -59,7 +59,7 @@ sleep 10
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
 
-if [ $type = "ASNYC" ]; then
+if [ $type = "ASYNC" ]; then
     /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t edgecut -d ~/dbs/
     sleep 30
     ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t edgecut -o atravel-2 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
@@ -115,7 +115,7 @@ sleep 10
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
 
-if [ $type = "ASNYC" ]; then
+if [ $type = "ASYNC" ]; then
     /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t vertexcut -d ~/dbs/
     sleep 30
     ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t vertexcut -o atravel-2 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
@@ -171,7 +171,7 @@ sleep 10
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
 
-if [ $type = "ASNYC" ]; then
+if [ $type = "ASYNC" ]; then
     /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t dido -d ~/dbs/
     sleep 30
     ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t dido -o atravel-2 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
@@ -228,7 +228,7 @@ sleep 10
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
 
-if [ $type = "ASNYC" ]; then
+if [ $type = "ASYNC" ]; then
     /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t giga -d ~/dbs/
     sleep 30
     ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t giga -o atravel-2 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
