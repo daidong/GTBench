@@ -229,7 +229,9 @@ public class bfs {
             }
         }
 
+        lock_vertices_to_travel.lock();
         ArrayList<byte[]> passedVertices = TravelLocalReader.filterVertices(instance.localStore, keys, currStep, 0);
+        lock_vertices_to_travel.unlock();
 
         if (preload_enabled) {
             // add back preloaded vertices, so that the passedVertices has all vertices for current step.
