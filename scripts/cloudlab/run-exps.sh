@@ -2,11 +2,11 @@
 
 bound=`expr $1 - 1 + 1`
 
-# /users/dirruncc/GTBench/scripts/cloudlab/Utils.sh $bound JPS
-# /users/dirruncc/GTBench/scripts/cloudlab/Utils.sh $bound UPDATE
-# /users/dirruncc/GTBench/scripts/cloudlab/Utils.sh $bound UPDATE-COMPILE
-# /users/dirruncc/GTBench/scripts/cloudlab/Utils.sh $bound CLEAN
-# /users/dirruncc/GTBench/scripts/cloudlab/Utils.sh $bound RM
+# /users/dirruncc/GTBench/scripts/cloudlab/Utils.sh 32 JPS
+# /users/dirruncc/GTBench/scripts/cloudlab/Utils.sh 32 UPDATE
+# /users/dirruncc/GTBench/scripts/cloudlab/Utils.sh 32 UPDATE-COMPILE
+# /users/dirruncc/GTBench/scripts/cloudlab/Utils.sh 32 CLEAN
+# /users/dirruncc/GTBench/scripts/cloudlab/Utils.sh 32 RM
 # /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 
 # This is a script to run all the tests and collect the results.
