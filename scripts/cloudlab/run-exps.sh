@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 bound=`expr $1 - 1 + 1`
-type=SYNC
+type="ASYNC"
 
 if [ $type = "SNYC" ]; then
     echo "DO NOT EXECUTE ASYNC"
@@ -33,28 +33,28 @@ sleep 5
 
 /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t edgecut -d ~/dbs/
 sleep 30
-~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t edgecut -o insert-graph -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t edgecut -o insert-graph -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
 sleep 30
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
 
 /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t edgecut -d ~/dbs/
 sleep 30
-~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t edgecut -o travel-2 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t edgecut -o travel-2 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
 sleep 10
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
 
 /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t edgecut -d ~/dbs/
 sleep 30
-~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t edgecut -o travel-4 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t edgecut -o travel-4 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
 sleep 10
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
 
 /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t edgecut -d ~/dbs/
 sleep 30
-~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t edgecut -o travel-8 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t edgecut -o travel-8 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
 sleep 10
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
@@ -62,21 +62,21 @@ sleep 30
 if [ $type = "ASYNC" ]; then
     /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t edgecut -d ~/dbs/
     sleep 30
-    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t edgecut -o atravel-2 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t edgecut -o atravel-2 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
     sleep 10
     /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
     sleep 30
 
     /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t edgecut -d ~/dbs/
     sleep 30
-    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t edgecut -o atravel-4 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t edgecut -o atravel-4 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
     sleep 10
     /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
     sleep 30
 
     /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t edgecut -d ~/dbs/
     sleep 30
-    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t edgecut -o atravel-8 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t edgecut -o atravel-8 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
     sleep 10
     /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
     sleep 30
@@ -89,28 +89,28 @@ sleep 5
 
 /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t vertexcut -d ~/dbs/
 sleep 30
-~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t vertexcut -o insert-graph -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t vertexcut -o insert-graph -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
 sleep 30
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
 
 /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t vertexcut -d ~/dbs/
 sleep 30
-~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t vertexcut -o travel-2 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t vertexcut -o travel-2 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
 sleep 10
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
 
 /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t vertexcut -d ~/dbs/
 sleep 30
-~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t vertexcut -o travel-4 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t vertexcut -o travel-4 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
 sleep 10
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
 
 /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t vertexcut -d ~/dbs/
 sleep 30
-~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t vertexcut -o travel-8 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t vertexcut -o travel-8 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
 sleep 10
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
@@ -118,21 +118,21 @@ sleep 30
 if [ $type = "ASYNC" ]; then
     /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t vertexcut -d ~/dbs/
     sleep 30
-    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t vertexcut -o atravel-2 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t vertexcut -o atravel-2 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
     sleep 10
     /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
     sleep 30
 
     /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t vertexcut -d ~/dbs/
     sleep 30
-    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t vertexcut -o atravel-4 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t vertexcut -o atravel-4 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
     sleep 10
     /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
     sleep 30
 
     /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t vertexcut -d ~/dbs/
     sleep 30
-    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t vertexcut -o atravel-8 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t vertexcut -o atravel-8 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
     sleep 10
     /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
     sleep 30
@@ -145,28 +145,28 @@ sleep 5
 
 /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t dido -d ~/dbs/
 sleep 30
-~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t dido -o insert-graph -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t dido -o insert-graph -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
 sleep 30
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
 
 /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t dido -d ~/dbs/
 sleep 30
-~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t dido -o travel-2 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t dido -o travel-2 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
 sleep 10
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
 
 /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t dido -d ~/dbs/
 sleep 30
-~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t dido -o travel-4 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t dido -o travel-4 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
 sleep 10
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
 
 /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t dido -d ~/dbs/
 sleep 30
-~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t dido -o travel-8 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t dido -o travel-8 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
 sleep 10
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
@@ -174,21 +174,21 @@ sleep 30
 if [ $type = "ASYNC" ]; then
     /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t dido -d ~/dbs/
     sleep 30
-    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t dido -o atravel-2 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t dido -o atravel-2 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
     sleep 10
     /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
     sleep 30
 
     /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t dido -d ~/dbs/
     sleep 30
-    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t dido -o atravel-4 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t dido -o atravel-4 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
     sleep 10
     /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
     sleep 30
 
     /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t dido -d ~/dbs/
     sleep 30
-    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t dido -o atravel-8 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t dido -o atravel-8 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
     sleep 10
     /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
     sleep 30
@@ -202,28 +202,28 @@ sleep 5
 
 /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t giga -d ~/dbs/
 sleep 30
-~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t giga -o insert-graph -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t giga -o insert-graph -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
 sleep 30
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
 
 /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t giga -d ~/dbs/
 sleep 30
-~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t giga -o travel-2 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t giga -o travel-2 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
 sleep 10
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
 
 /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t giga -d ~/dbs/
 sleep 30
-~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t giga -o travel-4 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t giga -o travel-4 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
 sleep 10
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
 
 /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t giga -d ~/dbs/
 sleep 30
-~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t giga -o travel-8 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t giga -o travel-8 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
 sleep 10
 /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
 sleep 30
@@ -231,21 +231,21 @@ sleep 30
 if [ $type = "ASYNC" ]; then
     /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t giga -d ~/dbs/
     sleep 30
-    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t giga -o atravel-2 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t giga -o atravel-2 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
     sleep 10
     /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
     sleep 30
 
     /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t giga -d ~/dbs/
     sleep 30
-    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t giga -o atravel-4 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t giga -o atravel-4 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
     sleep 10
     /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
     sleep 30
 
     /users/dirruncc/GTBench/scripts/cloudlab/StartServer.sh -n $bound -t giga -d ~/dbs/
     sleep 30
-    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t giga -o atravel-8 -c 0 -g /proj/dirr-PG0/datasets/p2p-Gnutella04.txt
+    ~/GTBench/scripts/cloudlab/ClientOps.sh -n $bound -t giga -o atravel-8 -c 0 -g /proj/dirr-PG0/datasets/amazon0302.txt
     sleep 10
     /users/dirruncc/GTBench/scripts/cloudlab/StopServer.sh -n $bound
     sleep 30
